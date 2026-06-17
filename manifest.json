@@ -1,18 +1,16 @@
 {
-  "name": "ServiceNow Employees Time",
-  "short_name": "SN Employees Time",
-  "description": "Proprietary software developed for Hansel",
-  "start_url": "./",
-  "scope": "./",
+  "name": "Hourly Tracker",
+  "short_name": "Hourly",
+  "description": "Time and pay tracking app with call‑outs, commissions and pay estimation.",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#293e40",
-  "theme_color": "#293e40",
+  "background_color": "#0a0f14",
+  "theme_color": "#0a0f14",
   "icons": [
     {
       "src": "icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     }
   ]
 }
