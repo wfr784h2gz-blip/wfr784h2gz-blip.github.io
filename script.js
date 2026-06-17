@@ -115,6 +115,9 @@
       regMinutes,
       otMinutes,
       pay,
+      // default category and notes for auto entries
+      category: '',
+      notes: '',
     };
     entries.push(entry);
     localStorage.setItem('entries', JSON.stringify(entries));
@@ -236,6 +239,174 @@
     document.getElementById('estResult').textContent = formatCurrency(gross);
   }
 
+  // Add a manual entry with custom times, call‑out, commission, category and notes
+  function addManualEntry() {
+    const dateVal = document.getElementById('manualDate').value;
+    const startVal = document.getElementById('manualStart').value;
+    const endVal = document.getElementById('manualEnd').value;
+    if (!dateVal || !startVal || !endVal) {
+      alert('Please enter a date, start time and end time for the manual entry.');
+      return;
+    }
+    // Construct full Date objects
+    const startDate = new Date(`${dateVal}T${startVal}`);
+    const endDate = new Date(`${dateVal}T${endVal}`);
+    if (isNaN(startDate) || isNaN(endDate) || endDate <= startDate) {
+      alert('End time must be after start time.');
+      return;
+    }
+    const totalMinutes = Math.floor((endDate - startDate) / 60000);
+    const regMinutes = Math.min(totalMinutes, 480);
+    const otMinutes = Math.max(totalMinutes - 480, 0);
+    const regPay = (regMinutes / 60) * regularRate;
+    const otPay = (otMinutes / 60) * overtimeRate;
+    const pay = regPay + otPay;
+    // Category and notes
+    const category = document.getElementById('manualCategory').value.trim();
+    const notes = document.getElementById('manualNotes').value.trim();
+    // Build and store entry
+    const entry = {
+      date: startDate.toISOString(),
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+      regMinutes,
+      otMinutes,
+      pay,
+      category,
+      notes,
+    };
+    entries.push(entry);
+    localStorage.setItem('entries', JSON.stringify(entries));
+    // Optional call‑out
+    const calloutType = document.getElementById('manualCallout').value;
+    if (calloutType) {
+      const callout = {
+        date: startDate.toISOString(),
+        type: calloutType,
+      };
+      callouts.push(callout);
+      localStorage.setItem('callouts', JSON.stringify(callouts));
+    }
+    // Optional commission
+    const commissionVal = parseFloat(
+      document.getElementById('manualCommission').value
+    );
+    if (!isNaN(commissionVal) && commissionVal > 0) {
+      const commission = {
+        date: startDate.toISOString(),
+        amount: commissionVal,
+      };
+      commissions.push(commission);
+      localStorage.setItem('commissions', JSON.stringify(commissions));
+    }
+    // Reset form fields
+    const todayIso = new Date().toISOString().substring(0, 10);
+    document.getElementById('manualDate').value = todayIso;
+    document.getElementById('manualStart').value = '';
+    document.getElementById('manualEnd').value = '';
+    document.getElementById('manualCallout').value = '';
+    document.getElementById('manualCommission').value = '';
+    document.getElementById('manualCategory').value = '';
+    document.getElementById('manualNotes').value = '';
+    updateUI();
+  }
+
+  // Export entries and extras to CSV file
+  function exportCsv() {
+    // Prepare CSV header
+    let csv = 'Type,Date,Start,End,Reg Minutes,OT Minutes,Total Pay,Category,Notes\n';
+    // Add entries
+    entries.forEach((entry) => {
+      const date = new Date(entry.start);
+      const dateStr = date.toISOString().substring(0, 10);
+      const startTime = date.toTimeString().substring(0, 5);
+      const endTime = new Date(entry.end).toTimeString().substring(0, 5);
+      csv += `Entry,${dateStr},${startTime},${endTime},${entry.regMinutes},${entry.otMinutes},${entry.pay.toFixed(
+        2
+      )},${entry.category || ''},${entry.notes || ''}\n`;
+    });
+    // Add call‑outs
+    callouts.forEach((co) => {
+      const d = new Date(co.date);
+      const dateStr = d.toISOString().substring(0, 10);
+      csv += `Call‑Out,${dateStr},,,,,${
+        co.type === 'weekday' ? weekdayCalloutRate : weekendCalloutRate
+      }.00,,\n`;
+    });
+    // Add commissions
+    commissions.forEach((com) => {
+      const d = new Date(com.date);
+      const dateStr = d.toISOString().substring(0, 10);
+      csv += `Commission,${dateStr},,,,,${com.amount.toFixed(2)},,\n`;
+    });
+    // Create blob and trigger download
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'hourly_tracker_data.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  // Compute custom summary for date range
+  function computeRangeSummary() {
+    const startVal = document.getElementById('rangeStart').value;
+    const endVal = document.getElementById('rangeEnd').value;
+    if (!startVal || !endVal) {
+      alert('Please select both start and end dates for the range.');
+      return;
+    }
+    const startDate = new Date(startVal);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(endVal);
+    endDate.setHours(23, 59, 59, 999);
+    if (endDate < startDate) {
+      alert('End date must be on or after start date.');
+      return;
+    }
+    let rangeReg = 0;
+    let rangeOt = 0;
+    let rangeRegPay = 0;
+    let rangeOtPay = 0;
+    let rangeCallPay = 0;
+    let rangeComPay = 0;
+    // Entries
+    entries.forEach((entry) => {
+      const entryStart = new Date(entry.start);
+      if (entryStart >= startDate && entryStart <= endDate) {
+        rangeReg += entry.regMinutes;
+        rangeOt += entry.otMinutes;
+        rangeRegPay += (entry.regMinutes / 60) * regularRate;
+        rangeOtPay += (entry.otMinutes / 60) * overtimeRate;
+      }
+    });
+    // Call‑outs
+    callouts.forEach((co) => {
+      const cDate = new Date(co.date);
+      if (cDate >= startDate && cDate <= endDate) {
+        rangeCallPay += co.type === 'weekday' ? weekdayCalloutRate : weekendCalloutRate;
+      }
+    });
+    // Commissions
+    commissions.forEach((com) => {
+      const cd = new Date(com.date);
+      if (cd >= startDate && cd <= endDate) {
+        rangeComPay += com.amount;
+      }
+    });
+    const totalMinutes = rangeReg + rangeOt;
+    const rangePay = rangeRegPay + rangeOtPay;
+    const gross = rangePay + rangeCallPay + rangeComPay;
+    document.getElementById('rangeHours').textContent = formatMinutes(totalMinutes);
+    document.getElementById('rangePay').textContent = formatCurrency(rangePay);
+    document.getElementById('rangeCallout').textContent = formatCurrency(rangeCallPay);
+    document.getElementById('rangeCommission').textContent = formatCurrency(rangeComPay);
+    document.getElementById('rangeGross').textContent = formatCurrency(gross);
+  }
+
   // Delete entry by index
   function deleteEntry(index) {
     entries.splice(index, 1);
@@ -340,6 +511,8 @@
           <td>${formatMinutes(entry.regMinutes)}</td>
           <td>${formatMinutes(entry.otMinutes)}</td>
           <td>${formatCurrency(entry.pay)}</td>
+          <td>${entry.category || ''}</td>
+          <td>${entry.notes || ''}</td>
           <td><button class="delete-btn" data-index="${displayIndex}">Delete</button></td>
         `;
         tbody.appendChild(tr);
@@ -353,6 +526,20 @@
   document.getElementById('addCommissionBtn').addEventListener('click', addCommission);
   document.getElementById('saveRatesBtn').addEventListener('click', saveRates);
   document.getElementById('estimateBtn').addEventListener('click', estimatePay);
+
+  // Additional features event listeners
+  const manualBtn = document.getElementById('addManualEntryBtn');
+  if (manualBtn) {
+    manualBtn.addEventListener('click', addManualEntry);
+  }
+  const exportBtn = document.getElementById('exportCsvBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', exportCsv);
+  }
+  const rangeBtn = document.getElementById('computeRangeBtn');
+  if (rangeBtn) {
+    rangeBtn.addEventListener('click', computeRangeSummary);
+  }
 
   // Delegated delete handler for dynamic buttons
   document
@@ -369,6 +556,11 @@
     const todayIso = new Date().toISOString().substring(0, 10);
     document.getElementById('calloutDate').value = todayIso;
     document.getElementById('commissionDate').value = todayIso;
+    // Initialize manual entry date if field exists
+    const manualDateInput = document.getElementById('manualDate');
+    if (manualDateInput) {
+      manualDateInput.value = todayIso;
+    }
   }
 
   // Initialize pay settings inputs

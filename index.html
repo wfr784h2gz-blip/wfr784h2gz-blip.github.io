@@ -170,6 +170,69 @@
           <span id="estResult">$0.00</span>
         </p>
       </section>
+
+      <!-- Manual Entry card -->
+      <section id="manualEntry" class="card">
+        <h2>Manual Entry</h2>
+        <div class="form-row">
+          <label for="manualDate">Date:</label>
+          <input type="date" id="manualDate" />
+        </div>
+        <div class="form-row">
+          <label for="manualStart">Start Time:</label>
+          <input type="time" id="manualStart" />
+        </div>
+        <div class="form-row">
+          <label for="manualEnd">End Time:</label>
+          <input type="time" id="manualEnd" />
+        </div>
+        <div class="form-row">
+          <label for="manualCallout">Call‑Out:</label>
+          <select id="manualCallout">
+            <option value="">None</option>
+            <option value="weekday">Weekday</option>
+            <option value="weekend">Weekend</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="manualCommission">Commission ($):</label>
+          <input type="number" id="manualCommission" min="0" step="0.01" />
+        </div>
+        <div class="form-row">
+          <label for="manualCategory">Category:</label>
+          <input type="text" id="manualCategory" placeholder="e.g. maintenance" />
+        </div>
+        <div class="form-row">
+          <label for="manualNotes">Notes:</label>
+          <input type="text" id="manualNotes" />
+        </div>
+        <button id="addManualEntryBtn" type="button" class="primary-btn">
+          Add Manual Entry
+        </button>
+      </section>
+
+      <!-- Custom Range Summary card -->
+      <section id="customSummary" class="card">
+        <h2>Custom Summary</h2>
+        <div class="form-row">
+          <label for="rangeStart">Start Date:</label>
+          <input type="date" id="rangeStart" />
+        </div>
+        <div class="form-row">
+          <label for="rangeEnd">End Date:</label>
+          <input type="date" id="rangeEnd" />
+        </div>
+        <button id="computeRangeBtn" type="button" class="primary-btn">
+          Compute
+        </button>
+        <ul class="summary-list">
+          <li><strong>Hours:</strong> <span id="rangeHours">0h&nbsp;0m</span></li>
+          <li><strong>Pay:</strong> <span id="rangePay">$0.00</span></li>
+          <li><strong>Call‑Out Pay:</strong> <span id="rangeCallout">$0.00</span></li>
+          <li><strong>Commission:</strong> <span id="rangeCommission">$0.00</span></li>
+          <li><strong>Gross Pay:</strong> <span id="rangeGross">$0.00</span></li>
+        </ul>
+      </section>
       <!-- Recent entries card -->
       <section id="entries" class="card">
         <h2>Recent Entries</h2>
@@ -183,11 +246,18 @@
                 <th>Reg</th>
                 <th>OT</th>
                 <th>Pay</th>
+                <th>Category</th>
+                <th>Notes</th>
                 <th></th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
+        </div>
+        <div class="button-row">
+          <button id="exportCsvBtn" type="button" class="primary-btn">
+            Export CSV
+          </button>
         </div>
       </section>
     </main>
