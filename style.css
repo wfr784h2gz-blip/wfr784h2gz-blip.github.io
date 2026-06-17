@@ -1,0 +1,423 @@
+:root {
+  --bg: #0a192f;
+  --sidebar-bg: #041e42;
+  --card-bg: #0c2e52;
+  --header-bg: #071b34;
+  --primary-color: #007bff;
+  --green: #22c55e;
+  --red: #dc3545;
+  --yellow: #fbbf24;
+  --text-primary: #e6f1ff;
+  --text-secondary: #94a3b8;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  color: var(--text-secondary);
+}
+.sidebar .brand h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: var(--text-primary);
+}
+.sidebar .brand p {
+  margin: .4rem 0 1rem;
+  font-size: .85rem;
+  color: var(--text-secondary);
+}
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar nav li {
+  padding: .5rem .75rem;
+  margin-bottom: .3rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: background-color .2s, color .2s;
+}
+.sidebar nav li.active,
+.sidebar nav li:hover {
+  background-color: #0c3a6a;
+  color: var(--text-primary);
+}
+.sidebar .user-info {
+  margin-top: auto;
+  font-size: .85rem;
+  color: var(--text-secondary);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--header-bg);
+  border-bottom: 1px solid #10325a;
+}
+.topbar .title h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+.topbar .title .highlight {
+  color: var(--yellow);
+  font-weight: 800;
+}
+
+/* Title highlight for header */
+.title-highlight {
+  /* Use the default primary text color for the heading; the highlighted portion will be styled via .service-name */
+  color: var(--text-primary);
+  font-weight: 800;
+  margin: 0;
+}
+
+/* Specific styling for the highlighted portion of the header (Service Now) */
+.service-name {
+  color: var(--yellow);
+  font-weight: 800;
+}
+.topbar .title p {
+  margin: 0;
+  margin-top: .3rem;
+  font-size: .9rem;
+  color: var(--text-secondary);
+}
+.status-group {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .85rem;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--green);
+}
+.live-label {
+  color: var(--green);
+  font-weight: 600;
+}
+#currentDate {
+  color: #e2e8f0;
+}
+#periodSelect {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid #2b426a;
+  border-radius: 6px;
+  padding: .3rem .5rem;
+}
+.cards {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 1rem;
+}
+.card {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 1rem;
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.card h3 {
+  margin: 0 0 .5rem;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+.section-subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .85rem;
+  margin-bottom: .6rem;
+}
+.time-inputs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: .7rem;
+}
+.time-field {
+  flex: 1;
+}
+.time-field label {
+  display: block;
+  font-size: .8rem;
+  color: var(--text-secondary);
+  margin-bottom: .2rem;
+}
+.time-field input {
+  width: 100%;
+  padding: .6rem;
+  border-radius: 6px;
+  border: 1px solid #2b426a;
+  background-color: var(--header-bg);
+  color: var(--text-primary);
+}
+.time-total {
+  margin: .8rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+.time-total small {
+  display: block;
+  font-size: .9rem;
+  color: #f87171;
+  margin-top: .2rem;
+}
+.button-row {
+  display: flex;
+  gap: .7rem;
+}
+.button-row.single {
+  justify-content: flex-start;
+}
+.btn {
+  padding: .6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: .9rem;
+}
+.btn.start {
+  background-color: var(--green);
+  color: #fff;
+}
+.btn.stop {
+  background-color: var(--red);
+  color: #fff;
+}
+.btn.primary {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+.btn.secondary {
+  background-color: #475569;
+  color: var(--text-primary);
+}
+.btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+.summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.summary-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: .4rem 0;
+  border-bottom: 1px solid #10325a;
+}
+.summary-list li:last-child {
+  border-bottom: none;
+}
+.summary-list li.total-row {
+  font-weight: 700;
+  color: var(--green);
+}
+.callout-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.callout-form .field {
+  margin-bottom: .7rem;
+}
+.callout-pay-display {
+  background-color: var(--header-bg);
+  padding: .5rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: .7rem;
+}
+.callout-pay-display span {
+  color: var(--text-secondary);
+  font-size: .85rem;
+}
+.callout-summary .summary-box {
+  background-color: var(--header-bg);
+  padding: .5rem;
+  border-radius: 8px;
+  margin-bottom: .5rem;
+}
+.callout-summary .summary-box span {
+  display: block;
+  font-size: .8rem;
+  color: var(--text-secondary);
+}
+.callout-summary .summary-box strong {
+  font-size: 1.1rem;
+  color: var(--green);
+}
+.callout-summary .summary-box.total {
+  background-color: #0e334a;
+}
+.entries-card table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .85rem;
+}
+.entries-card th, .entries-card td {
+  padding: .5rem;
+  text-align: left;
+  border-bottom: 1px solid #10325a;
+}
+.entries-card th {
+  background-color: var(--header-bg);
+  color: var(--text-primary);
+}
+.entries-card tbody tr:nth-child(odd) {
+  background-color: var(--header-bg);
+}
+.entries-card tbody tr:nth-child(even) {
+  background-color: var(--card-bg);
+}
+.view-all {
+  margin-top: .8rem;
+  text-align: center;
+}
+
+/* Responsive design for mobile screens */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem;
+    position: static;
+    overflow-x: auto;
+  }
+  .sidebar nav ul {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+  }
+  .sidebar nav li {
+    margin: 0 .3rem;
+    padding: .4rem .6rem;
+    font-size: .8rem;
+  }
+  .sidebar .brand, .sidebar .user-info {
+    display: none;
+  }
+  .cards {
+    display: flex;
+    flex-direction: column;
+    padding: .5rem;
+  }
+  .card {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .callout-card-grid {
+    grid-template-columns: 1fr;
+  }
+  .button-row {
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .btn {
+    width: 100%;
+    font-size: 1rem;
+  }
+  .time-total {
+    font-size: 1.5rem;
+  }
+  .summary-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .summary-list li span,
+  .summary-list li strong {
+    margin-bottom: .2rem;
+  }
+  .entries-card table {
+    font-size: .75rem;
+  }
+}
+
+/* Estimator card styles */
+.estimator-card .estimator-form .field {
+  margin-bottom: .7rem;
+}
+.estimator-card .estimator-result {
+  margin-top: .8rem;
+  background-color: var(--header-bg);
+  padding: .6rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  color: var(--green);
+}
+.estimator-card .estimator-result span {
+  color: var(--text-secondary);
+  font-size: .9rem;
+}
+
+/* ===================================== */
+/* Custom additions for improved UX */
+
+/* Add spacing before icons in sidebar items */
+.sidebar nav li .icon {
+  margin-right: .5rem;
+}
+
+/* Style delete buttons in entries table for better visibility */
+.entries-card .delete-btn {
+  background-color: var(--red);
+  color: #fff;
+  border: none;
+  padding: .4rem .6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .8rem;
+}
+
+/* Ensure the last column in entries table does not wrap so buttons remain visible */
+.entries-card td:last-child {
+  white-space: nowrap;
+}
+
+/* Style the pay frequency select element inside the estimator card */
+.estimator-card select {
+  width: 100%;
+  padding: .6rem;
+  border-radius: 6px;
+  border: 1px solid #2b426a;
+  background-color: var(--header-bg);
+  color: var(--text-primary);
+}

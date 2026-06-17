@@ -1,0 +1,18 @@
+{
+  "name": "ServiceNow Employees Time",
+  "short_name": "SN Employees Time",
+  "description": "Proprietary software developed for Hansel",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#293e40",
+  "theme_color": "#293e40",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
